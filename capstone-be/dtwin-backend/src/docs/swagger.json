@@ -1,0 +1,602 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Smart Digital Twin API",
+    "version": "1.0.0",
+    "description": "Dokumentasi API website Smart Digital Twin."
+  },
+  "servers": [
+    {
+      "url": "https://dtwin.projectbase.my.id",
+      "description": "Development Server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Users"
+    },
+    {
+      "name": "Auth"
+    },
+    {
+      "name": "Login Log"
+    },
+    {
+      "name": "Forgot Password"
+    },
+    {
+      "name": "Change Email"
+    },
+    {
+      "name": "Change Password"
+    },
+    {
+      "name": "Profiles"
+    },
+    {
+      "name": "Delete User"
+    },
+    {
+      "name": "Analytics"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Register new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fullname": { "type": "string" },
+                  "username": { "type": "string" },
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                },
+                "required": ["fullname", "username", "email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Registration successful." }
+        }
+      }
+    },
+    "/users/verify-otp": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Verify OTP",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "code": { "type": "string" }
+                },
+                "required": ["email", "code"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OTP verification successful." }
+        }
+      }
+    },
+    "/users/resend-otp": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Resend OTP",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" }
+                },
+                "required": ["email"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP code has been sent to your email for account verification."
+          }
+        }
+      }
+    },
+    "/auth/google-login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Login user oauth",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idToken": { "type": "string" }
+                },
+                "required": ["idToken"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OAuth login successful." }
+        }
+      }
+    },
+    "/auth": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Login user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "identifier": { "type": "string" },
+                  "password": { "type": "string" }
+                },
+                "required": ["identifier", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Login successful." }
+        }
+      },
+      "put": {
+        "tags": ["Auth"],
+        "summary": "Refresh token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": { "type": "string" }
+                },
+                "required": ["refreshToken"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Refresh token successful." }
+        }
+      },
+      "delete": {
+        "tags": ["Auth"],
+        "summary": "Delete refresh token",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": { "type": "string" }
+                },
+                "required": ["refreshToken"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Token deletion successful." }
+        }
+      }
+    },
+    "/login-log": {
+      "get": {
+        "tags": ["Login Log"],
+        "summary": "Get all login logs (admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Ok." }
+        }
+      }
+    },
+    "/forgot-password": {
+      "post": {
+        "tags": ["Forgot Password"],
+        "summary": "Forgot password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" }
+                },
+                "required": ["email"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP code for password reset has been sent to your email."
+          }
+        }
+      }
+    },
+    "/forgot-password/verify-otp": {
+      "post": {
+        "tags": ["Forgot Password"],
+        "summary": "Verify OTP",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "code": { "type": "string" }
+                },
+                "required": ["email", "code"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OTP verification successful." }
+        }
+      }
+    },
+    "/forgot-password/reset-password": {
+      "post": {
+        "tags": ["Forgot Password"],
+        "summary": "Reset password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": { "type": "string" },
+                  "newPassword": { "type": "string" }
+                },
+                "required": ["token", "newPassword"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Password successfully updated." }
+        }
+      }
+    },
+    "/change-email": {
+      "post": {
+        "tags": ["Change Email"],
+        "summary": "Change email",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" }
+                },
+                "required": ["email"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP code for change email has been sent to your new email."
+          }
+        }
+      }
+    },
+    "/change-email/verify-otp": {
+      "post": {
+        "tags": ["Change Email"],
+        "summary": "Verify OTP",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": { "type": "string" }
+                },
+                "required": ["code"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Change email successful."
+          }
+        }
+      }
+    },
+    "/change-password": {
+      "put": {
+        "tags": ["Change Password"],
+        "summary": "Change password",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "oldPassword": { "type": "string" },
+                  "newPassword": { "type": "string" }
+                },
+                "required": ["oldPassword", "newPassword"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password changed successfully."
+          }
+        }
+      }
+    },
+    "/profiles": {
+      "put": {
+        "tags": ["Profiles"],
+        "summary": "Update user profile ",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "full_name": { "type": "string" },
+                  "phone": { "type": "string" },
+                  "birth_date": { "type": "string", "format": "date" },
+                  "gender": { "type": "string", "enum": ["male", "female"] },
+                  "profile_image": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Profile updated successfully." }
+        }
+      },
+      "get": {
+        "tags": ["Profiles"],
+        "summary": "Get user profile",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Ok." }
+        }
+      }
+    },
+    "/profiles/photo-profile": {
+      "get": {
+        "tags": ["Profiles"],
+        "summary": "Get photo profile user",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Ok." }
+        }
+      }
+    },
+    "/profiles/all": {
+      "get": {
+        "tags": ["Profiles"],
+        "summary": "Get all users (admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Ok." }
+        }
+      }
+    },
+    "/delete-user/request-delete": {
+      "post": {
+        "tags": ["Delete User"],
+        "summary": "Request delete",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "OTP to confirm account deletion has been sent to your email."
+          }
+        }
+      }
+    },
+    "/delete-user/verify-otp": {
+      "post": {
+        "tags": ["Delete User"],
+        "summary": "Verify OTP",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": { "type": "string" }
+                },
+                "required": ["code"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account deletion request successful."
+          }
+        }
+      }
+    },
+    "/delete-user/{id}": {
+      "delete": {
+        "tags": ["Delete User"],
+        "summary": "Delete user by id (admin only)",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deletion successful."
+          }
+        }
+      }
+    },
+    "/analytics/face-detection": {
+      "post": {
+        "tags": ["Analytics"],
+        "summary": "Daily check-in",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image_base64": { "type": "string" }
+                },
+                "required": ["image_base64"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Daily check-in successful." }
+        }
+      }
+    },
+    "/analytics/predict": {
+      "post": {
+        "tags": ["Analytics"],
+        "summary": "Analyze daily activity and predict productivity",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sleep_duration": { "type": "number" },
+                  "study_work_duration": { "type": "number" },
+                  "exercise_duration": { "type": "number" },
+                  "downtime_duration": { "type": "number" },
+                  "task_planned": { "type": "integer" },
+                  "task_completed": { "type": "integer" }
+                },
+                "required": [
+                  "sleep_duration",
+                  "study_work_duration",
+                  "exercise_duration",
+                  "downtime_duration",
+                  "task_planned",
+                  "task_completed"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Productivity analysis generated successfully."
+          }
+        }
+      }
+    },
+    "/analytics/predict/{id}": {
+      "put": {
+        "tags": ["Analytics"],
+        "summary": "Update analyze daily activity and predict productivity",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sleep_duration": { "type": "number" },
+                  "study_work_duration": { "type": "number" },
+                  "exercise_duration": { "type": "number" },
+                  "downtime_duration": { "type": "number" },
+                  "task_planned": { "type": "integer" },
+                  "task_completed": { "type": "integer" }
+                },
+                "required": [
+                  "sleep_duration",
+                  "study_work_duration",
+                  "exercise_duration",
+                  "downtime_duration",
+                  "task_planned",
+                  "task_completed"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Daily log successfully updated."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

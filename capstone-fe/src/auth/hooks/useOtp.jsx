@@ -1,0 +1,79 @@
+import { useState } from "react";
+import { apiFetch } from "../../utils/api";
+
+export default function useOtp() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const verifyOtp = async (email, code) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await apiFetch("/users/verify-otp",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            email,
+            code,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message ||
+            "OTP tidak valid"
+        );
+      }
+      
+      return data;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const resendOtp = async (email) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await apiFetch("/users/resend-otp",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            email,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message ||
+            "Gagal mengirim OTP"
+        );
+      }
+
+      return data;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return {
+    verifyOtp,
+    resendOtp,
+    isLoading,
+    error,
+  };
+}
